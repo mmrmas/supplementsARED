@@ -5,12 +5,12 @@
 // Variables that may be adjusted to operate this file are below the comment "//CHANGE ACCORDING TO CONTEXT"
 //  Assumed is a plate layout where the first 2 columns are copied 6 times over one 96 well plate. A1 is a positive control; H2 is a negative (empty) control.
 //Then, non-treated samples are in the first 2 columns (1,2), treated in the second (3,4), and again for column (5,6 vs 7,8) and (9,10 vs 11,12)
-//The output of this macro is a text document with RGB data. The normalized B-R data time series and Euclidian Distance can be analyzed and visualized by running the SUP_20210302_IJOutputAnalysis.R with the command in the end of this script's output file. 
+//The output of this macro is a text document with RGB data. The normalized B-R data time series and Euclidian Distance can be analyzed and visualized by running the SUP_20210302_IJOutputAnalysis.R with the command in the end of this script's output file.
 
 // Variables #############################################
 // This macro station id
 //CHANGE ACCORDING TO CONTEXT
-Recording_station_id = "Recording Station 1"; 
+Recording_station_id = "Recording Station 1";
 
 
 
@@ -22,8 +22,8 @@ if (isOpen("ROI Manager")) {
 	run("Close");
 }
 // close results
-if (isOpen("Results")) {	
-	run("Clear Results"); 	
+if (isOpen("Results")) {
+	run("Clear Results");
 }
 
 // close images
@@ -55,9 +55,9 @@ platform_file = '';
 //CHANGE ACCORDING TO CONTEXT
 if (platform == 'SA20191111_water'){
 	//CHANGE ACCORDING TO CONTEXT
-	platform_file = 'SA20191111-water/20191111_SA20191111_analysis.R';
+	platform_file = 'IJMacroResutToPdf.R';
 }
-savedir = getDirectory("Create a directory to save the file"); 
+savedir = getDirectory("Create a directory to save the file");
 // get the dropbox shared folder, assume that the image is also in there
 
 //CHANGE ACCORDING TO CONTEXT
@@ -71,7 +71,7 @@ run("Set Measurements...", "mean redirect=None decimal=3");
 
 
 
-// start the image captures stream. ############################################# 
+// start the image captures stream. #############################################
 
 // We measure every minute and check from 40 minutes if the control "red" values have surpassed their "blue" values.
 waitForUser("start the IJ webcam plugin\n -select the camera\n -custom width=1700 height=1050\n unit=µm pixel_size=1.00000000 \n 8-bit number = 4 \n\npress OK when you are ready to start measuring");
@@ -82,7 +82,7 @@ setBatchMode(true);
 slides = 60;
 endslide = 0;
 for (s=1; s<=slides; s++) {
-	selectImage(stream); 
+	selectImage(stream);
 	saveAs("Jpeg", savedir+s+"_"+filename+".jpg");
 	rename(stream);
 	// open that file
@@ -92,7 +92,7 @@ for (s=1; s<=slides; s++) {
 		// check the color in the first 16 wells
 		run("Size...", "width=1700 height=1050 depth=endslide average interpolation=Bilinear");
 		run("ROI Manager...");
-		roiManager("Open", anchor_dir+"/4. Tools/Macro_Station1/20191111_colorcheck_RoiSet_Station1.zip"); 
+		roiManager("Open", anchor_dir+"/4. Tools/Macro_Station1/20191111_colorcheck_RoiSet_Station1.zip");
 		// split the colors in RGB
 		run("Split Channels");
 		// measure the color intensities
@@ -101,7 +101,7 @@ for (s=1; s<=slides; s++) {
  		selectWindow(s+"_"+filename+".jpg (red)");
 		roiManager("measure");
 		roiManager("reset");
- 		selectImage(stream); 
+ 		selectImage(stream);
 		close(s+"_"+filename+".jpg (blue)");
 		close(s+"_"+filename+".jpg (green)");
 		close(s+"_"+filename+".jpg (red)");
@@ -112,8 +112,8 @@ for (s=1; s<=slides; s++) {
 		b2 = getResult("Mean",1);
 		r1 = getResult("Mean",2);
 		r2 = getResult("Mean",3);
-		run("Clear Results"); 	
-		// stop if the color intensity crosses a certain threshold		
+		run("Clear Results");
+		// stop if the color intensity crosses a certain threshold
 		if ((r1 > b1) & (r2 > b2)){
 			s = slides + 1;
 		}
@@ -125,7 +125,7 @@ for (s=1; s<=slides; s++) {
 s = endslide +1;
 //add 20 slides for the slow growers F20, N10
 for (t=s; t<=s+19; t++) {
-	selectImage(stream); 
+	selectImage(stream);
 	saveAs("Jpeg", savedir+t+"_"+filename+".jpg");
 	rename(stream);
 	// open that file
@@ -165,12 +165,12 @@ open(savefile);
 run("Size...", "width=1700 height=1050 depth=endslide average interpolation=Bilinear");
 
 // set output name
-dir = getDirectory("image"); 
-name_ori = getTitle; 
-index = lastIndexOf(name_ori, "."); 
-if (index!=-1){ 
+dir = getDirectory("image");
+name_ori = getTitle;
+index = lastIndexOf(name_ori, ".");
+if (index!=-1){
 	name = substring(name_ori, 0, index);
-}   
+}
 name = name + ".IJ.txt";
 
 
@@ -214,7 +214,7 @@ for (i=0; i<list.length; i++){
 			run("Subtract...", "value="+ abs(dR));
 		}
 		run("Copy");
-		run("Close"); 
+		run("Close");
 		selectWindow(list[i]);
 		Stack.setSlice(s);
 		run("Paste");
@@ -233,9 +233,9 @@ setBatchMode(false);
 Stack.setSlice(10)
 
 
-//rotate and resize to standard 
+//rotate and resize to standard
 waitForUser("make sure plate 1 is left, plate 2 is right");
-run("Rotate... "); 
+run("Rotate... ");
 
 // Get the ROIs and align them
 run("ROI Manager...");
@@ -252,7 +252,7 @@ waitForUser("adjust via image-transform-translate and image-adjust-size if still
 // split the colors in RGB
 run("Split Channels");
 list = getList("image.titles");
-Array.sort (list); 
+Array.sort (list);
 
 // measure the color intensities
  for (i=0; i<list.length; i++){
@@ -287,7 +287,7 @@ File.append(Recording_station_id,dir+name);
 Rlocation = anchor_dir + '/4. Tools/'+ platform_file;
 RlocationMac = replace(Rlocation, "\\ ", "\\\\\ ");
 
-//CHANGE ACCORDING TO CONTEXT if you need your logo on your report 
+//CHANGE ACCORDING TO CONTEXT if you need your logo on your report
 Logolocation = anchor_dir +'/4. Tools/SA20191111-water/SA_logo.png';
 LogolocationWin = replace(Logolocation, "/", "\\\\");
 LogolocationMac = replace(Logolocation, "\\ ", "\\\\\ ");
@@ -309,4 +309,3 @@ selectWindow("Results");
 run("Close");
 selectWindow("ROI Manager");
 run("Close");
-
