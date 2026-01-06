@@ -1,5 +1,5 @@
 # supplementsARED
-scripts used for analysis of colorimetric data from our ARED study (to be submitted)
+scripts used for analysis of colorimetric data from our ARED study
 
 IJMacro_Supplement:
 The main script is SUP_20210302_IJMacro_RecordingStation.ijm that runs as a macro witinh the ImageJ environment.
